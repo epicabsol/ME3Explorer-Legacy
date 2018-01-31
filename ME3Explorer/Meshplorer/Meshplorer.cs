@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
@@ -24,7 +23,6 @@ namespace ME3Explorer.Meshplorer
         public int MeshplorerMode = 0; //0=PCC,1=PSK
         public StaticMesh stm;
         public SkeletalMesh skm;
-        public SkeletalMeshOld skmold;
         public float PreviewRotation = 0;
 
         public Meshplorer()
@@ -162,7 +160,6 @@ namespace ME3Explorer.Meshplorer
             DisableLODs();
             UnCheckLODs();
             skm = new SkeletalMesh(pcc as ME3Package, index);
-            skmold = new SkeletalMeshOld(pcc as ME3Package, index);
             hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
 
             // Load preview model
@@ -253,13 +250,14 @@ namespace ME3Explorer.Meshplorer
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
             {
-                SaveFileDialog d = new SaveFileDialog();
+                /*SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.psk|*.psk";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     skmold.ExportToPsk(d.FileName, getLOD());
                     MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-                }
+                }*/
+                MessageBox.Show("benji: Sorry, skeletal PSK export isn't available for the time being.");
             }
         }
 
@@ -399,7 +397,7 @@ namespace ME3Explorer.Meshplorer
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
             {
-                OpenFileDialog d = new OpenFileDialog();
+                /*OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
@@ -413,7 +411,8 @@ namespace ME3Explorer.Meshplorer
                     MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     rtb1.Visible = false;
                     timer1.Enabled = true;
-                }
+                }*/
+                MessageBox.Show("benji: Sorry, skeletal PSK export is unavailable for the time being.");
             }
         }
 
@@ -555,7 +554,6 @@ namespace ME3Explorer.Meshplorer
             UnCheckLODs();
             stm = null;
             skm = null;
-            skmold = null;
             preview?.Dispose();
             preview = null;
             MaterialBox.Visible = false;
@@ -825,7 +823,6 @@ namespace ME3Explorer.Meshplorer
                 if (pcc.getExport(index).ClassName != "SkeletalMesh")
                 {
                     skm = null;
-                    skmold = null;
                     preview?.Dispose();
                     preview = null;
                     treeView1.Nodes.Clear();

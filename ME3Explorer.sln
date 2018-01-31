@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\ME3Explorer.csproj", "{60E91B60-FCEE-4B36-967E-4022D8A54F2F}"
 EndProject
@@ -19,8 +19,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaltTPF", "SaltTPF\SaltTPF.csproj", "{8637A2AA-E1FB-4EC9-88A5-688D7D1F7921}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3LibWV", "ME3LibWV\ME3LibWV.csproj", "{A8E1981A-0A8C-4C7A-9175-B5F0C085F639}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Creator", "ME3Creator\ME3Creator.csproj", "{5ABA4120-7379-479E-BE61-C452C10A1810}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFreonLib", "KFreonLib\KFreonLib.csproj", "{8B07ED45-42F4-4B0E-A581-2C257F77241E}"
 EndProject
@@ -170,22 +168,6 @@ Global
 		{A8E1981A-0A8C-4C7A-9175-B5F0C085F639}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A8E1981A-0A8C-4C7A-9175-B5F0C085F639}.Release|x64.ActiveCfg = Release|Any CPU
 		{A8E1981A-0A8C-4C7A-9175-B5F0C085F639}.Release|x86.ActiveCfg = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|x64.Build.0 = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Debug|x86.Build.0 = Debug|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|x64.ActiveCfg = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|x64.Build.0 = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|x86.ActiveCfg = Release|Any CPU
-		{5ABA4120-7379-479E-BE61-C452C10A1810}.Release|x86.Build.0 = Release|Any CPU
 		{8B07ED45-42F4-4B0E-A581-2C257F77241E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8B07ED45-42F4-4B0E-A581-2C257F77241E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B07ED45-42F4-4B0E-A581-2C257F77241E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -261,5 +243,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1571D9F4-6A75-41B9-9598-72CB46474214}
 	EndGlobalSection
 EndGlobal

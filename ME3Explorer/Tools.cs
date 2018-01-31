@@ -203,7 +203,7 @@ namespace ME3Explorer
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
-            set.Add(new Tool
+            /*set.Add(new Tool
             {
                 name = "Level Database",
                 type = typeof(LevelExplorer.Levelbase),
@@ -214,7 +214,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
-            });
+            });*/
             set.Add(new Tool
             {
                 name = "Meshplorer",
@@ -524,16 +524,16 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Level Explorer",
-                type = typeof(LevelExplorer.LevelEditor.Leveleditor),
+                type = typeof(LevelExplorer.LevelExplorer),
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
                 open = () =>
                 {
-                    (new LevelExplorer.LevelEditor.Leveleditor()).Show();
+                    (new LevelExplorer.LevelExplorer()).Show();
                 },
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
             });
-            set.Add(new Tool
+            /*set.Add(new Tool
             {
                 name = "ME3 Creator",
                 type = typeof(ME3Creator.Form1),
@@ -549,7 +549,7 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "advanced", "cloning", "import", "export" },
                 subCategory = "Core",
                 description = "ME3Creator is the toolset’s most advanced modding tool for ME3. It allows for level viewing, intrafile and interfile import and export cloning, re-linking of game objects, and much more.",
-            });
+            });*/
             set.Add(new Tool
             {
                 name = "Meshplorer 2",
