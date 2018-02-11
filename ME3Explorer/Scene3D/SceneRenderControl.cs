@@ -61,6 +61,7 @@ namespace ME3Explorer.Scene3D
                 return Device != null;
             }
         }
+        public float StrafeSpeed = 5.0f;
 
         public SceneRenderControl()
         {
@@ -171,6 +172,7 @@ namespace ME3Explorer.Scene3D
         public void UpdateSize()
         {
             DestroyBuffers();
+            ImmediateContext.Rasterizer.SetViewport(new Viewport(0, 0, Width, Height));
             SwapChain.ResizeBuffers(2, Width, Height, Format.Unknown, SwapChainFlags.None);
             BuildBuffers();
         }
@@ -230,7 +232,7 @@ namespace ME3Explorer.Scene3D
 
         public void UpdateScene()
         {
-            float TimeStep = 0.1f;
+            float TimeStep = 0.1f; // TODO: use System.Diagnostics.Stopwatch for accurate time delta measurement.
             Time += TimeStep;
             OnUpdate(TimeStep);
             Update?.Invoke(null, TimeStep);
@@ -242,19 +244,19 @@ namespace ME3Explorer.Scene3D
             {
                 if (KeyW)
                 {
-                    Camera.Position += Camera.CameraForward * TimeStep * 5;
+                    Camera.Position += Camera.CameraForward * TimeStep * StrafeSpeed;
                 }
                 if (KeyS)
                 {
-                    Camera.Position += -Camera.CameraForward * TimeStep * 5;
+                    Camera.Position += -Camera.CameraForward * TimeStep * StrafeSpeed;
                 }
                 if (KeyA)
                 {
-                    Camera.Position += Camera.CameraLeft * TimeStep * 5;
+                    Camera.Position += Camera.CameraLeft * TimeStep * StrafeSpeed;
                 }
                 if (KeyD)
                 {
-                    Camera.Position += -Camera.CameraLeft * TimeStep * 5;
+                    Camera.Position += -Camera.CameraLeft * TimeStep * StrafeSpeed;
                 }
             }
         }
@@ -350,12 +352,14 @@ namespace ME3Explorer.Scene3D
             }
 
             lastMouse = e.Location;
+            Invalidate();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
             Camera.FocusDepth *= (float) Math.Pow(1.2, -Math.Sign(e.Delta)); // kinda hacky because this moves in constant increments regardless of how far the user scrolls.
+            Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)

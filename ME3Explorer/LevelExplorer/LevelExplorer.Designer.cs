@@ -28,44 +28,52 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.components = new System.ComponentModel.Container();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPCCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportRawBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.firstPersonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.LoadProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel1 = new System.Windows.Forms.Panel();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.label1 = new System.Windows.Forms.Label();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.SceneTree = new System.Windows.Forms.TreeView();
             this.label2 = new System.Windows.Forms.Label();
-            this.menuStrip1.SuspendLayout();
+            this.Renderer = new ME3Explorer.Scene3D.SceneRenderControl();
+            this.SceneUpdateTimer = new System.Windows.Forms.Timer(this.components);
+            this.menuStrip.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(1269, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.menuStrip.Size = new System.Drawing.Size(1269, 24);
+            this.menuStrip.TabIndex = 0;
+            this.menuStrip.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openPCCToolStripMenuItem});
+            this.openPCCToolStripMenuItem,
+            this.exportRawBinaryToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -73,8 +81,16 @@
             // openPCCToolStripMenuItem
             // 
             this.openPCCToolStripMenuItem.Name = "openPCCToolStripMenuItem";
-            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.openPCCToolStripMenuItem.Text = "Open PCC...";
+            this.openPCCToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.openPCCToolStripMenuItem.Text = "Open Level...";
+            this.openPCCToolStripMenuItem.Click += new System.EventHandler(this.openPCCToolStripMenuItem_Click);
+            // 
+            // exportRawBinaryToolStripMenuItem
+            // 
+            this.exportRawBinaryToolStripMenuItem.Name = "exportRawBinaryToolStripMenuItem";
+            this.exportRawBinaryToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.exportRawBinaryToolStripMenuItem.Text = "Export Raw Binary";
+            this.exportRawBinaryToolStripMenuItem.Click += new System.EventHandler(this.exportRawBinaryToolStripMenuItem_Click_1);
             // 
             // editToolStripMenuItem
             // 
@@ -84,27 +100,45 @@
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.firstPersonToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
-            // toolStrip1
+            // firstPersonToolStripMenuItem
             // 
-            this.toolStrip1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStrip1.Location = new System.Drawing.Point(260, 24);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.toolStrip1.Size = new System.Drawing.Size(729, 25);
-            this.toolStrip1.TabIndex = 1;
-            this.toolStrip1.Text = "toolStrip1";
+            this.firstPersonToolStripMenuItem.CheckOnClick = true;
+            this.firstPersonToolStripMenuItem.Name = "firstPersonToolStripMenuItem";
+            this.firstPersonToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.firstPersonToolStripMenuItem.Text = "First Person";
+            this.firstPersonToolStripMenuItem.Click += new System.EventHandler(this.firstPersonToolStripMenuItem_Click);
             // 
-            // statusStrip1
+            // toolStrip
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 629);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1269, 22);
-            this.statusStrip1.TabIndex = 2;
-            this.statusStrip1.Text = "statusStrip1";
+            this.toolStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStrip.Location = new System.Drawing.Point(260, 24);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.toolStrip.Size = new System.Drawing.Size(729, 25);
+            this.toolStrip.TabIndex = 1;
+            this.toolStrip.Text = "toolStrip1";
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LoadProgressBar});
+            this.statusStrip.Location = new System.Drawing.Point(0, 629);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1269, 22);
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // LoadProgressBar
+            // 
+            this.LoadProgressBar.Name = "LoadProgressBar";
+            this.LoadProgressBar.Size = new System.Drawing.Size(400, 16);
+            this.LoadProgressBar.Visible = false;
             // 
             // splitter1
             // 
@@ -154,7 +188,7 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.treeView1);
+            this.panel2.Controls.Add(this.SceneTree);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 24);
@@ -162,13 +196,14 @@
             this.panel2.Size = new System.Drawing.Size(255, 605);
             this.panel2.TabIndex = 7;
             // 
-            // treeView1
+            // SceneTree
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 19);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(255, 586);
-            this.treeView1.TabIndex = 8;
+            this.SceneTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SceneTree.Location = new System.Drawing.Point(0, 19);
+            this.SceneTree.Name = "SceneTree";
+            this.SceneTree.Size = new System.Drawing.Size(255, 586);
+            this.SceneTree.TabIndex = 8;
+            this.SceneTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.SceneTree_AfterSelect);
             // 
             // label2
             // 
@@ -181,23 +216,47 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Scene";
             // 
+            // Renderer
+            // 
+            this.Renderer.BackColor = System.Drawing.Color.Fuchsia;
+            this.Renderer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Renderer.Location = new System.Drawing.Point(260, 49);
+            this.Renderer.Name = "Renderer";
+            this.Renderer.Size = new System.Drawing.Size(729, 580);
+            this.Renderer.TabIndex = 8;
+            this.Renderer.TabStop = false;
+            this.Renderer.Wireframe = false;
+            this.Renderer.Update += new System.EventHandler<float>(this.sceneRenderControl1_Update);
+            this.Renderer.Render += new System.EventHandler(this.sceneRenderControl1_Render);
+            // 
+            // SceneUpdateTimer
+            // 
+            this.SceneUpdateTimer.Enabled = true;
+            this.SceneUpdateTimer.Interval = 10;
+            this.SceneUpdateTimer.Tick += new System.EventHandler(this.SceneUpdateTimer_Tick);
+            // 
             // LevelExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1269, 651);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.Renderer);
+            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.splitter2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.menuStrip);
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "LevelExplorer";
             this.Text = "LevelExplorer";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LevelExplorer_FormClosing);
+            this.Load += new System.EventHandler(this.LevelExplorer_Load);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -209,20 +268,25 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openPCCToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStrip toolStrip;
+        private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Splitter splitter2;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TreeView SceneTree;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripMenuItem exportRawBinaryToolStripMenuItem;
+        public Scene3D.SceneRenderControl Renderer;
+        private System.Windows.Forms.ToolStripMenuItem firstPersonToolStripMenuItem;
+        private System.Windows.Forms.Timer SceneUpdateTimer;
+        private System.Windows.Forms.ToolStripProgressBar LoadProgressBar;
     }
 }

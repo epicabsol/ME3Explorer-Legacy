@@ -372,6 +372,19 @@ namespace ME3Explorer.Unreal.Classes
             return r;
         }
 
+        public Vector3 DXToRotator(Vector3 v)
+        {
+            Vector3 r = new Vector3();
+            float f = 65536f / (3.1415f * 2f);
+            r.X = -v.X * f;
+            r.Y = v.Z * f;
+            r.Z = -v.Y * f;
+            r.X = (int)r.X % 65536;
+            r.Y = (int)r.Y % 65536;
+            r.Z = (int)r.Z % 65536;
+            return r;
+        }
+
         public void SetSelection(bool Selected)
         {
             if (STM != null)
