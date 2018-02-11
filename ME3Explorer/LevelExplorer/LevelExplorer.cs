@@ -25,7 +25,7 @@ namespace ME3Explorer.LevelExplorer
         {
             InitializeComponent();
             //Renderer.Camera.FirstPerson = true;
-            Renderer.StrafeSpeed = 300.0f;
+            Renderer.StrafeSpeed = 400.0f;
         }
 
         private void UpdateTitleText()

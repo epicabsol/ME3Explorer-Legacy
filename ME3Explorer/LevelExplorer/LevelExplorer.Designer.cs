@@ -232,7 +232,7 @@
             // SceneUpdateTimer
             // 
             this.SceneUpdateTimer.Enabled = true;
-            this.SceneUpdateTimer.Interval = 10;
+            this.SceneUpdateTimer.Interval = 20;
             this.SceneUpdateTimer.Tick += new System.EventHandler(this.SceneUpdateTimer_Tick);
             // 
             // LevelExplorer

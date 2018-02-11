@@ -50,6 +50,8 @@ namespace ME3Explorer.Scene3D
         public bool KeyS = false;
         public bool KeyA = false;
         public bool KeyD = false;
+        public bool KeySpace = false;
+        public bool KeyShift = false;
         public bool Orbiting { get; private set; } = false;
         public bool Panning { get; private set; } = false;
         public bool Zooming { get; private set; } = false;
@@ -226,9 +228,11 @@ namespace ME3Explorer.Scene3D
                 RenderScene();
         }
 
+        private System.Diagnostics.Stopwatch Stopwatch = new System.Diagnostics.Stopwatch();
         public void UpdateScene()
         {
-            float TimeStep = 0.1f; // TODO: use System.Diagnostics.Stopwatch for accurate time delta measurement.
+            float TimeStep = (float)Stopwatch.Elapsed.TotalSeconds; // TODO: use System.Diagnostics.Stopwatch for accurate time delta measurement.
+            Stopwatch.Restart();
             Time += TimeStep;
             OnUpdate(TimeStep);
             Update?.Invoke(null, TimeStep);
@@ -253,6 +257,14 @@ namespace ME3Explorer.Scene3D
                 if (KeyD)
                 {
                     Camera.Position += -Camera.CameraLeft * TimeStep * StrafeSpeed;
+                }
+                if (KeySpace)
+                {
+                    Camera.Position += Camera.CameraUp * TimeStep * StrafeSpeed;
+                }
+                if (KeyShift)
+                {
+                    Camera.Position += -Camera.CameraUp * TimeStep * StrafeSpeed;
                 }
             }
         }
@@ -348,6 +360,7 @@ namespace ME3Explorer.Scene3D
             }
 
             lastMouse = e.Location;
+            UpdateScene();
             Invalidate();
         }
 
@@ -402,6 +415,12 @@ namespace ME3Explorer.Scene3D
                 case Keys.D:
                     KeyD = true;
                     break;
+                case Keys.Space:
+                    KeySpace = true;
+                    break;
+                case Keys.ShiftKey:
+                    KeyShift = true;
+                    break;
             }
         }
 
@@ -422,7 +441,19 @@ namespace ME3Explorer.Scene3D
                 case Keys.D:
                     KeyD = false;
                     break;
+                case Keys.Space:
+                    KeySpace = false;
+                    break;
+                case Keys.ShiftKey:
+                    KeyShift = false;
+                    break;
             }
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            if (keyData.HasFlag(Keys.Shift)) return true;
+            return base.IsInputKey(keyData);
         }
     }
 }
