@@ -89,6 +89,9 @@ namespace ME3Explorer.Scene3D
             Properties.Add("Name", mat.pcc.Exports[mat.index].ObjectName);
             foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
             {
+                // Performance optimization: skip cubemaps for now
+                if (texparam.Desc.ToLower().Contains("cube"))
+                    continue;
                 if (texparam.TexIndex != 0)
                 {
                     Textures.Add(texparam.Desc, FindTexture(texcache, mat.pcc.getEntry(texparam.TexIndex).GetFullPath, mat.pcc.FileName));
@@ -120,8 +123,13 @@ namespace ME3Explorer.Scene3D
 
         }
 
+        private static Dictionary<string, Tuple<string, int>> KnownTextureCache = new Dictionary<string, Tuple<string, int>>();
         private PreviewTextureCache.PreviewTextureEntry FindTexture(PreviewTextureCache texcache, string FullTextureName, string ImportPCC)
         {
+            //return null;
+            if (KnownTextureCache.ContainsKey(FullTextureName))
+                return texcache.LoadTexture(KnownTextureCache[FullTextureName].Item1, KnownTextureCache[FullTextureName].Item2);
+
             string importfiledir = System.IO.Path.GetDirectoryName(ImportPCC).ToLower();
             string importfilename = System.IO.Path.GetFileName(ImportPCC).ToLower();
             string pccpath = "";
@@ -132,11 +140,17 @@ namespace ME3Explorer.Scene3D
             {
                 foreach (IExportEntry exp in pcc.Exports)
                 {
-                    if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                    if (exp.ClassName == "Texture2D")
                     {
-                        pccpath = ImportPCC;
-                        id = exp.Index;
-                        break;
+                        string fullPath = exp.GetFullPath; // cache because its slow to get
+                        if (!KnownTextureCache.ContainsKey(fullPath))
+                            KnownTextureCache.Add(fullPath, new Tuple<string, int>(ImportPCC, exp.Index));
+                        if (fullPath == FullTextureName)
+                        {
+                            pccpath = ImportPCC;
+                            id = exp.Index;
+                            break;
+                        }
                     }
                 }
             }
@@ -146,15 +160,22 @@ namespace ME3Explorer.Scene3D
                 // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
                 if (parts.Length == 3)
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc"))
+                    string path = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(path))
                     {
                         foreach (IExportEntry exp in pcc.Exports)
                         {
-                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            if (exp.ClassName == "Texture2D")
                             {
-                                pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                                id = exp.Index;
-                                break;
+                                string fullPath = exp.GetFullPath; // cache because its slow to get
+                                if (!KnownTextureCache.ContainsKey(fullPath))
+                                    KnownTextureCache.Add(fullPath, new Tuple<string, int>(path, exp.Index));
+                                if (fullPath == FullTextureName)
+                                {
+                                    pccpath = path;
+                                    id = exp.Index;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -162,15 +183,22 @@ namespace ME3Explorer.Scene3D
                 // Now go for the BioP one.
                 if (pccpath == "" && parts.Length >= 2)
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc"))
+                    string path = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(path))
                     {
                         foreach (IExportEntry exp in pcc.Exports)
                         {
-                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            if (exp.ClassName == "Texture2D")
                             {
-                                pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                                id = exp.Index;
-                                break;
+                                string fullPath = exp.GetFullPath; // cache because its slow to get
+                                if (!KnownTextureCache.ContainsKey(fullPath))
+                                    KnownTextureCache.Add(fullPath, new Tuple<string, int>(path, exp.Index));
+                                if (fullPath == FullTextureName)
+                                {
+                                    pccpath = path;
+                                    id = exp.Index;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -183,7 +211,7 @@ namespace ME3Explorer.Scene3D
             }
             else
             {
-                Console.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
+                KFreonLib.Debugging.DebugOutput.PrintLn("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
                 return null;
             }
         }

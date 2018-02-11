@@ -279,12 +279,22 @@
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LevelExplorer\BaseProxy.cs" />
     <Compile Include="LevelExplorer\LevelExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="LevelExplorer\LevelExplorer.Designer.cs">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="LevelExplorer\LevelSelectDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelSelectDialog.Designer.cs">
+      <DependentUpon>LevelSelectDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelExplorer\PropGridHelpers.cs" />
+    <Compile Include="LevelExplorer\Proxies\StaticMeshActorProxy.cs" />
+    <Compile Include="LevelExplorer\Proxies\StaticMeshCollectionActorProxy.cs" />
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
@@ -1092,6 +1102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
       <DependentUpon>LevelExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelExplorer\LevelSelectDialog.resx">
+      <DependentUpon>LevelSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
