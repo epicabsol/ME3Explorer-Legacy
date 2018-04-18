@@ -74,11 +74,17 @@ namespace ME3Explorer.LevelExplorer.Proxies
 
         public override void Render()
         {
+            // flash for debugging purposes
+           /*if (DateTime.Now.Millisecond / 100 % 2 == 0)
+                return;*/
+
             for (int i = 0; i < Actor.Entries.Count; i++)
             {
                 if (Components[i] != null)
                 {
                     Unreal.Classes.StaticMeshComponent com = Components[i].Component;
+                    if (com.Translation.X != 0 || com.Translation.Y != 0 || com.Translation.Z != 0 || com.Rotation.X != 0 || com.Rotation.Y != 0 || com.Rotation.Z != 0)
+                        System.Diagnostics.Debugger.Break();
                     SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
                     SharpDX.Matrix YZInverse = YZConvert;
                     YZInverse.Invert();

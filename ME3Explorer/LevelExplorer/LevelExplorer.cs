@@ -25,7 +25,7 @@ namespace ME3Explorer.LevelExplorer
         {
             InitializeComponent();
             //Renderer.Camera.FirstPerson = true;
-            Renderer.StrafeSpeed = 400.0f;
+            Renderer.StrafeSpeed = 800.0f;
         }
 
         private void UpdateTitleText()
@@ -79,7 +79,7 @@ namespace ME3Explorer.LevelExplorer
 
         private void sceneRenderControl1_Render(object sender, EventArgs e)
         {
-            Renderer.ImmediateContext.ClearRenderTargetView(Renderer.BackBufferView, new SharpDX.Color(1.0f, 0.0f, 0.0f, 1.0f));
+            Renderer.ImmediateContext.ClearRenderTargetView(Renderer.BackBufferView, new SharpDX.Color(1.0f, 1.0f, 1.0f, 1.0f));
 
             // TODO: Render grid
 
@@ -93,6 +93,8 @@ namespace ME3Explorer.LevelExplorer
         {
             foreach (BaseProxy proxy in Proxies)
                 proxy.Update(e);
+
+            //Text = Renderer.Camera.Position.ToString();
         }
 
         private void exportRawBinaryToolStripMenuItem_Click_1(object sender, EventArgs e)
