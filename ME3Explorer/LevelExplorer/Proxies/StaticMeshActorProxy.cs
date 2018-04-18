@@ -167,12 +167,24 @@ namespace ME3Explorer.LevelExplorer.Proxies
 
         public override void Render()
         {
+            int d1 = 1;// DateTime.Now.Second % 2 == 0 ? -1 : 1;
+            int d2 = 1;// DateTime.Now.Second / 2 % 2 == 0 ? -1 : 1;
+            int d3 = 1;// DateTime.Now.Second / 4 % 2 == 0 ? -1 : 1;
+            int d4 = 1;// DateTime.Now.Second / 8 % 2 == 0 ? -1 : 1;
+            int d5 = 1;// DateTime.Now.Second / 16 % 2 == 0 ? -1 : 1;
+            int d6 = 1;// DateTime.Now.Second / 32 % 2 == 0 ? -1 : 1;
+
+            Unreal.Classes.StaticMeshComponent com = Component;
             SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
             SharpDX.Matrix YZInverse = YZConvert;
             YZInverse.Invert();
-            Unreal.Classes.StaticMeshComponent com = Component;
+            if (com.Translation.X != 0 || com.Translation.Y != 0 || com.Translation.Z != 0 || com.Rotation.X != 0 || com.Rotation.Y != 0 || com.Rotation.Z != 0)
+                System.Diagnostics.Debugger.Break();
             SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(com.Translation.X, com.Translation.Y, com.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(com.RotatorToDX(com.Rotation).X, com.RotatorToDX(com.Rotation).Y, com.RotatorToDX(com.Rotation).Z) * SharpDX.Matrix.Scaling(-com.Scale3D.X * com.Scale, -com.Scale3D.Y * com.Scale, com.Scale3D.Z * com.Scale);
-            SharpDX.Matrix actorTransform = SharpDX.Matrix.Translation(location.X, location.Y, location.Z) * SharpDX.Matrix.RotationYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z) * SharpDX.Matrix.Scaling(-DrawScale3D.X * DrawScale, -DrawScale3D.Y * DrawScale, DrawScale3D.Z * DrawScale);
+            SharpDX.Matrix actorTransform = SharpDX.Matrix.RotationYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * SharpDX.Matrix.Scaling(DrawScale3D.X * DrawScale * d4, DrawScale3D.Y * DrawScale * d5, DrawScale3D.Z * DrawScale * d6) * SharpDX.Matrix.Translation(location.X, location.Y, location.Z);
+
+            //comTransform = SharpDX.Matrix.Identity;
+
             Preview?.Render(Window.Renderer, 0, YZConvert * comTransform * actorTransform * YZInverse);
 
             //Preview?.Render(Window.Renderer, 0, SharpDX.Matrix.Translation(location.X, location.Z, location.Y) * SharpDX.Matrix.RotationY(Rotation.Z));
