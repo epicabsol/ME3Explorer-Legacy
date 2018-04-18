@@ -198,9 +198,14 @@
             // 
             // SceneTree
             // 
+            this.SceneTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SceneTree.CheckBoxes = true;
             this.SceneTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SceneTree.FullRowSelect = true;
+            this.SceneTree.HideSelection = false;
             this.SceneTree.Location = new System.Drawing.Point(0, 19);
             this.SceneTree.Name = "SceneTree";
+            this.SceneTree.ShowLines = false;
             this.SceneTree.Size = new System.Drawing.Size(255, 586);
             this.SceneTree.TabIndex = 8;
             this.SceneTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.SceneTree_AfterSelect);

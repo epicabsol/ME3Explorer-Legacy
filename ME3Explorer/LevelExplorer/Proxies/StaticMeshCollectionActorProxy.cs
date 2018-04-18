@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
 
@@ -100,6 +101,26 @@ namespace ME3Explorer.LevelExplorer.Proxies
 
             foreach (ComponentProxy component in Components)
                 component?.Preview.Dispose();
+        }
+
+        public override void NodeDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            base.NodeDoubleClicked(sender, e);
+
+            if (Components.Count == 0)
+                return; // There's nothing to focus on!
+
+            SharpDX.Vector3 min = Components[0].Component.Translation;
+            SharpDX.Vector3 max = Components[0].Component.Translation;
+
+            for (int i = 1; i < Components.Count; i++)
+            {
+                min = SharpDX.Vector3.Min(min, Actor.Matrices[i].TranslationVector);
+                max = SharpDX.Vector3.Max(max, Actor.Matrices[i].TranslationVector);
+            }
+
+            SharpDX.Vector3 center = (min + max) / 2.0f;
+            Window.Renderer.Camera.Position = new SharpDX.Vector3(center.X, center.Z, -center.Y);
         }
     }
 }

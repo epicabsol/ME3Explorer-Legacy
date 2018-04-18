@@ -1,18 +1,137 @@
-﻿using System;
+﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ME3Explorer;
-using ME3Explorer.Packages;
 
 namespace ME3Explorer.LevelExplorer.Proxies
 {
-    [InstanceProxy("StaticMeshActor")]
-    public class StaticMeshActorProxy : BaseProxy
+    [InstanceProxy("InterpActor")]
+    public class InterpActorProxy : BaseProxy
     {
+        // byte
+        [Category("Collision")]
+        public int Physics
+        {
+            get { return Actor.Physics; }
+            set { Actor.Physics = value; }
+        }
+
+        // byte
+        [Description("The role of this instance of Unreal with regards to networking this actor. See https://docs.unrealengine.com/en-us/Gameplay/Networking/Actors/Roles")]
+        [Category("Network")]
+        public int RemoteRole
+        {
+            get { return Actor.RemoteRole; }
+            set { Actor.RemoteRole = value; }
+        }
+
+        [Category("Advanced")]
+        public bool bHardAttach
+        {
+            get { return Actor.bHardAttach; }
+            set { Actor.bHardAttach = value; }
+        }
+
+        [Category("Behavior")]
+        public bool bStopOnEncroach
+        {
+            get { return Actor.bStopOnEncroach; }
+            set { Actor.bStopOnEncroach = value; }
+        }
+
+        [Category("Advanced")]
+        public bool bHiddenEdGroup
+        {
+            get { return Actor.bHiddenEdGroup; }
+            set { Actor.bHiddenEdGroup = value; }
+        }
+
+        [Category("Collision")]
+        public bool bNoEncroachCheck
+        {
+            get { return Actor.bNoEncroachCheck; }
+            set { Actor.bNoEncroachCheck = value; }
+        }
+
+        [Category("Collision")]
+        [Description("If a Pawn can be 'based' on this KActor. If not, they will 'bounce' off when they try to.")]
+        public bool bPawnCanBaseOn
+        {
+            get { return Actor.bPawnCanBaseOn; }
+            set { Actor.bPawnCanBaseOn = value; }
+        }
+
+        [Category("Collision")]
+        public bool bBlockActors
+        {
+            get { return Actor.bBlockActors; }
+            set { Actor.bBlockActors = value; }
+        }
+
+        [Category("Behavior")]
+        public bool bBioSnapToBase
+        {
+            get { return Actor.bBioSnapToBase; }
+            set { Actor.bBlockActors = value; }
+        }
+
+        [Category("Attachment")]
+        public bool bIgnoreBaseRotation
+        {
+            get { return Actor.bIgnoreBaseRotation; }
+            set { Actor.bIgnoreBaseRotation = value; }
+        }
+
+        // NameIndex
+        [Category("Attachment")]
+        public int BaseBoneName
+        {
+            get { return Actor.BaseBoneName; }
+            set { Actor.BaseBoneName = value; }
+        }
+
+        // ObjectIndex
+        [Category("Display")]
+        public int LightEnvironment
+        {
+            get { return Actor.LightEnvironment; }
+            set { Actor.LightEnvironment = value; }
+        }
+
+        // ObjectIndex
+        [Category("Attachment")]
+        public int Base
+        {
+            get { return Actor.Base; }
+            set { Actor.Base = value; }
+        }
+
+        // ObejctIndex
+        [Category("Attachment")]
+        public int BaseSkelComponent
+        {
+            get { return Actor.BaseSkelComponent; }
+            set { Actor.BaseSkelComponent = value; }
+        }
+
+        [Category("Advanced")]
+        public float TickFrequencyAtEndDistance
+        {
+            get { return Actor.TickFrequencyAtEndDistance; }
+            set { Actor.TickFrequencyAtEndDistance = value; }
+        }
+
+        [Category("Network")]
+        public float NetUpdateFrequency
+        {
+            get { return Actor.NetUpdateFrequency; }
+            set { Actor.NetUpdateFrequency = value; }
+        }
+
         [Category("Collision")]
         public bool bCollideActors
         {
@@ -34,18 +153,11 @@ namespace ME3Explorer.LevelExplorer.Proxies
             set { Actor.bPathColliding = value; }
         }
 
-        [Category("Transform")]
+        [Category("Advanced")]
         public bool bLockLocation
         {
             get { return Actor.bLockLocation; }
             set { Actor.bLockLocation = value; }
-        }
-
-        [Category("Collision")]
-        public bool OverridePhysicsMat
-        {
-            get { return Actor.OverridePhysMat; }
-            set { Actor.OverridePhysMat = value; }
         }
 
         [Category("Display")]
@@ -55,7 +167,7 @@ namespace ME3Explorer.LevelExplorer.Proxies
             set { Actor.bHidden = value; }
         }
 
-        [Category("Display")]
+        [Category("Attachment")]
         public bool bShadowParented
         {
             get { return Actor.bShadowParented; }
@@ -111,13 +223,6 @@ namespace ME3Explorer.LevelExplorer.Proxies
             set { Actor.CreationTime = value; }
         }
 
-        [Category("Audio")]
-        public float AudioOcclusion
-        {
-            get { return Actor.AudioOcclusion; }
-            set { Actor.AudioOcclusion = value; }
-        }
-
         [Category("Transform")]
         public Vector3Helper location
         {
@@ -153,13 +258,13 @@ namespace ME3Explorer.LevelExplorer.Proxies
             set { Actor.CollisionComponent = value; }
         }
 
-        private Unreal.Classes.StaticMeshActor Actor = null;
+        private Unreal.Classes.InterpActor Actor = null;
         private Unreal.Classes.StaticMeshComponent Component = null;
         private Scene3D.ModelPreview Preview = null;
 
-        public StaticMeshActorProxy(IExportEntry export, LevelExplorer window) : base(export, window)
+        public InterpActorProxy(IExportEntry export, LevelExplorer window) : base(export, window)
         {
-            Actor = new Unreal.Classes.StaticMeshActor(window.pcc as ME3Package, export.Index);
+            Actor = new Unreal.Classes.InterpActor(window.pcc as ME3Package, export.Index);
             Component = Actor.STMC;
             if (Component?.STM != null)
                 Preview = new Scene3D.ModelPreview(window.Renderer.Device, Component.STM, window.Renderer.TextureCache);

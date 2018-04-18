@@ -26,6 +26,7 @@ namespace ME3Explorer.LevelExplorer
             InitializeComponent();
             //Renderer.Camera.FirstPerson = true;
             Renderer.StrafeSpeed = 800.0f;
+            SceneTree.NodeMouseDoubleClick += SceneTree_NodeMouseDoubleClick;
         }
 
         private void UpdateTitleText()
@@ -143,6 +144,12 @@ namespace ME3Explorer.LevelExplorer
         {
             Renderer.UpdateScene();
             Renderer.RenderScene();
+        }
+
+        private void SceneTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            BaseProxy proxy = e.Node.Tag as BaseProxy;
+            proxy?.NodeDoubleClicked(sender, e);
         }
     }
 }
