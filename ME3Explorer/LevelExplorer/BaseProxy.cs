@@ -58,6 +58,11 @@ namespace ME3Explorer.LevelExplorer
             return -1.0f;
         }
 
+        public virtual void NodeDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
+        {
+
+        }
+
         public virtual void Dispose()
         {
 
