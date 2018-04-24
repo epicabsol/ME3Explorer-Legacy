@@ -95,6 +95,7 @@ namespace ME3Explorer.LevelExplorer
             foreach (BaseProxy proxy in Proxies)
                 proxy.Update(e);
 
+            CameraStatusLabel.Text = "Camera: " + (Renderer.Camera.FirstPerson ? "First" : "Third") + " Person at Unreal <" + Math.Round(Renderer.Camera.Position.X, 2) + ", " + Math.Round(-Renderer.Camera.Position.Z, 2) + ", " + Math.Round(Renderer.Camera.Position.Y, 2) + ">";
             //Text = Renderer.Camera.Position.ToString();
         }
 

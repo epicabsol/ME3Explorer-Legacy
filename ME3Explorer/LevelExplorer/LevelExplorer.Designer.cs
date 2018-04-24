@@ -39,6 +39,7 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.LoadProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.CameraStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel1 = new System.Windows.Forms.Panel();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
@@ -127,7 +128,8 @@
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LoadProgressBar});
+            this.LoadProgressBar,
+            this.CameraStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 629);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1269, 22);
@@ -139,6 +141,13 @@
             this.LoadProgressBar.Name = "LoadProgressBar";
             this.LoadProgressBar.Size = new System.Drawing.Size(400, 16);
             this.LoadProgressBar.Visible = false;
+            // 
+            // CameraStatusLabel
+            // 
+            this.CameraStatusLabel.Name = "CameraStatusLabel";
+            this.CameraStatusLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.CameraStatusLabel.Size = new System.Drawing.Size(51, 17);
+            this.CameraStatusLabel.Text = "Camera:";
             // 
             // splitter1
             // 
@@ -293,5 +302,6 @@
         private System.Windows.Forms.ToolStripMenuItem firstPersonToolStripMenuItem;
         private System.Windows.Forms.Timer SceneUpdateTimer;
         private System.Windows.Forms.ToolStripProgressBar LoadProgressBar;
+        private System.Windows.Forms.ToolStripStatusLabel CameraStatusLabel;
     }
 }
