@@ -44,6 +44,10 @@ namespace ME3Explorer.LevelExplorer
         private void SceneTree_BeforeSelect(object sender, TreeViewCancelEventArgs e)
         {
             e.Cancel = true;
+
+            if (e.Node.Tag as BaseProxy == null)
+                return;
+
             if (!Renderer.KeyShift)
             {
                 foreach (BaseProxy proxy in Proxies)
