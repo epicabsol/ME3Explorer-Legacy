@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SharpDX;
 
 namespace ME3Explorer.LevelExplorer.Proxies
 {
@@ -270,21 +271,40 @@ namespace ME3Explorer.LevelExplorer.Proxies
                 Preview = new Scene3D.ModelPreview(window.Renderer.Device, Component.STM, window.Renderer.TextureCache);
         }
 
+        private Matrix RenderingMatrix
+        {
+            get
+            {
+                Unreal.Classes.StaticMeshComponent com = Component;
+                SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
+                SharpDX.Matrix YZInverse = YZConvert;
+                YZInverse.Invert();
+                if (com.Translation.X != 0 || com.Translation.Y != 0 || com.Translation.Z != 0 || com.Rotation.X != 0 || com.Rotation.Y != 0 || com.Rotation.Z != 0)
+                    System.Diagnostics.Debugger.Break();
+                SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(com.Translation.X, com.Translation.Y, com.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(com.RotatorToDX(com.Rotation).X, com.RotatorToDX(com.Rotation).Y, com.RotatorToDX(com.Rotation).Z) * SharpDX.Matrix.Scaling(-com.Scale3D.X * com.Scale, -com.Scale3D.Y * com.Scale, com.Scale3D.Z * com.Scale);
+                SharpDX.Matrix actorTransform = SharpDX.Matrix.RotationYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * SharpDX.Matrix.Scaling(DrawScale3D.X * DrawScale, DrawScale3D.Y * DrawScale, DrawScale3D.Z * DrawScale) * SharpDX.Matrix.Translation(location.X, location.Y, location.Z);
+                return YZConvert * comTransform * actorTransform * YZInverse;
+            }
+        }
+
         public override void Render()
         {
             if (bHidden || bHiddenEd)
                 return;
 
-            Unreal.Classes.StaticMeshComponent com = Component;
-            SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
-            SharpDX.Matrix YZInverse = YZConvert;
-            YZInverse.Invert();
-            if (com.Translation.X != 0 || com.Translation.Y != 0 || com.Translation.Z != 0 || com.Rotation.X != 0 || com.Rotation.Y != 0 || com.Rotation.Z != 0)
-                System.Diagnostics.Debugger.Break();
-            SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(com.Translation.X, com.Translation.Y, com.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(com.RotatorToDX(com.Rotation).X, com.RotatorToDX(com.Rotation).Y, com.RotatorToDX(com.Rotation).Z) * SharpDX.Matrix.Scaling(-com.Scale3D.X * com.Scale, -com.Scale3D.Y * com.Scale, com.Scale3D.Z * com.Scale);
-            SharpDX.Matrix actorTransform = SharpDX.Matrix.RotationYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * SharpDX.Matrix.Scaling(DrawScale3D.X * DrawScale, DrawScale3D.Y * DrawScale, DrawScale3D.Z * DrawScale) * SharpDX.Matrix.Translation(location.X, location.Y, location.Z);
+            Preview?.Render(Window.Renderer, 0, RenderingMatrix);
+            if (Preview != null && IsSelected)
+            {
+                bool wasWire = Window.Renderer.Wireframe;
+                Window.Renderer.Wireframe = true;
 
-            Preview?.Render(Window.Renderer, 0, YZConvert * comTransform * actorTransform * YZInverse);
+                Scene3D.SceneRenderControl.WorldConstants ViewConstants = new Scene3D.SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(Window.Renderer.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(Window.Renderer.Camera.ViewMatrix), SharpDX.Matrix.Transpose(RenderingMatrix));
+                Window.SelectionEffect.PrepDraw(Window.Renderer.ImmediateContext);
+                Window.SelectionEffect.RenderObject(Window.Renderer.ImmediateContext, ViewConstants, Preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+
+
+                Window.Renderer.Wireframe = wasWire;
+            }
 
             base.Render();
         }
@@ -294,6 +314,22 @@ namespace ME3Explorer.LevelExplorer.Proxies
             Preview?.Dispose();
             Preview = null;
             base.Dispose();
+        }
+
+        public override float HitTest(Vector3 rayOrigin, Vector3 rayDirection)
+        {
+            if (Preview == null)
+                return -1.0f;
+
+            // Create transformation to take the ray from world space rendering coords (y-up) to model space Unreal coords
+            Matrix finalTransform = RenderingMatrix;
+            finalTransform.Invert();
+            rayOrigin = Vector3.TransformCoordinate(rayOrigin, finalTransform);
+            rayDirection = Vector3.TransformNormal(rayDirection, finalTransform);
+
+            Ray ray = new Ray(rayOrigin, rayDirection);
+
+            return Preview.LODs[0].Mesh.HitTest(ray);
         }
 
         public override void NodeDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)

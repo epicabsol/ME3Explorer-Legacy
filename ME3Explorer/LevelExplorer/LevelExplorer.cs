@@ -34,6 +34,87 @@ namespace ME3Explorer.LevelExplorer
             Renderer.StrafeSpeed = 800.0f;
             SceneTree.NodeMouseDoubleClick += SceneTree_NodeMouseDoubleClick;
             SceneTree.AfterCheck += SceneTree_AfterCheck;
+            Renderer.MouseClick += Renderer_MouseClick;
+            Renderer.MouseDown += Renderer_MouseDown;
+            KeyDown += LevelExplorer_KeyDown;
+            KeyUp += LevelExplorer_KeyUp;
+        }
+
+        private void Renderer_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Vector3 eyePos = Renderer.Camera.Position;
+                if (!Renderer.Camera.FirstPerson)
+                {
+                    eyePos += Renderer.Camera.CameraForward * -Renderer.Camera.FocusDepth;
+                }
+                //Vector3 direction = Renderer.Camera.CameraForward;
+                Vector3 direction = Vector3.Unproject(new Vector3(e.X, e.Y, 1.0f), 0, 0, Renderer.Width, Renderer.Height, Renderer.Camera.ZNear, Renderer.Camera.ZFar, Renderer.Camera.ViewMatrix * Renderer.Camera.ProjectionMatrix);
+                direction = direction - eyePos;
+                direction.Normalize();
+
+                float min = float.MaxValue;
+                BaseProxy minProxy = null;
+                foreach (BaseProxy proxy in Proxies)
+                {
+                    float distance = proxy.HitTest(eyePos, direction);
+
+                    if (distance < 0.0f)
+                        continue;
+
+                    if (distance < min)
+                    {
+                        min = distance;
+                        minProxy = proxy;
+                    }
+                }
+
+                if (minProxy != null)
+                {
+                    KFreonLib.Debugging.DebugOutput.PrintLn("Picked proxy '" + minProxy.Name + "'.");
+                }
+                else
+                {
+                    KFreonLib.Debugging.DebugOutput.PrintLn("Picked nothing.");
+                }
+
+                if (Renderer.KeyShift)
+                {
+                    if (minProxy != null)
+                        minProxy.IsSelected = !minProxy.IsSelected;
+                }
+                else
+                {
+                    foreach (BaseProxy proxy in Proxies)
+                        proxy.IsSelected = proxy == minProxy;
+                }
+            }
+        }
+
+        private void LevelExplorer_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Menu || e.Alt || e.KeyCode == Keys.Shift || e.Shift)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                Renderer.InvokeKeyUp(e);
+            }
+        }
+
+        private void LevelExplorer_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Menu || e.Alt || e.KeyCode == Keys.Shift || e.Shift)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                Renderer.InvokeKeyDown(e);
+            }
+        }
+
+        private void Renderer_MouseClick(object sender, MouseEventArgs e)
+        {
+
         }
 
         private void SceneTree_AfterCheck(object sender, TreeViewEventArgs e)
@@ -146,7 +227,7 @@ namespace ME3Explorer.LevelExplorer
 
         private void LevelExplorer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            pcc.Dispose();
+            pcc?.Dispose();
             GridMesh.Dispose();
             Grid100Mesh.Dispose();
             PositionColorEffect.Dispose();

@@ -119,6 +119,41 @@ namespace ME3Explorer.Scene3D
             IndexBuffer?.Dispose();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <returns>The distance to the hit, or less than zero for no hit.</returns>
+        public float HitTest(Ray ray)
+        {
+            BoundingBox aabb = new BoundingBox(AABBMin, AABBMax);
+            float distance;
+            if (!Collision.RayIntersectsBox(ref ray, ref aabb, out distance))
+            {
+                return -1.0f;
+            }
+            float minDistance = float.MaxValue;
+            bool hit = false;
+            for (int i = 0; i < Indices.Count; i += 3) // Assume triangles
+            {
+                float triDistance = 0.0f;
+                Vector3 v1 = Vertices[(int)Indices[i]].Position;
+                Vector3 v2 = Vertices[(int)Indices[i + 1]].Position;
+                Vector3 v3 = Vertices[(int)Indices[i + 2]].Position;
+                if (Collision.RayIntersectsTriangle(ref ray, ref v1, ref v2, ref v3, out triDistance))
+                {
+                    hit = true;
+                    if (triDistance < minDistance)
+                        minDistance = triDistance;
+                }
+            }
+
+            if (hit)
+                return minDistance;
+            else
+                return -1.0f;
+        }
+
         public static Mesh<PositionColorVertex> CreateGrid(Device device, float minX, float maxX, float minZ, float maxZ, Vector3 color, float stepX = 1.0f, float stepZ = 1.0f)
         {
             List<PositionColorVertex> vertices = new List<PositionColorVertex>();
