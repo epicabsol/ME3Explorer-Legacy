@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
+using SharpDX;
 
 namespace ME3Explorer.LevelExplorer.Proxies
 {
@@ -23,6 +24,17 @@ namespace ME3Explorer.LevelExplorer.Proxies
 
             public ModelPreview Preview = null;
             public Unreal.Classes.StaticMeshComponent Component = null;
+
+            public Matrix RenderingMatrix(Matrix actorMatrix)
+            {
+                if (Component.Translation.X != 0 || Component.Translation.Y != 0 || Component.Translation.Z != 0 || Component.Rotation.X != 0 || Component.Rotation.Y != 0 || Component.Rotation.Z != 0)
+                    System.Diagnostics.Debugger.Break();
+                SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
+                SharpDX.Matrix YZInverse = YZConvert;
+                YZInverse.Invert();
+                SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(Component.Translation.X, Component.Translation.Y, Component.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(Rotation.X, Rotation.Y, Rotation.Z) * SharpDX.Matrix.Scaling(-Component.Scale3D.X * Component.Scale, -Component.Scale3D.Y * Component.Scale, Component.Scale3D.Z * Component.Scale);
+                return YZConvert * comTransform * actorMatrix * YZInverse;
+            }
 
             public ComponentProxy(ModelPreview preview, Unreal.Classes.StaticMeshComponent component)
             {
@@ -83,14 +95,17 @@ namespace ME3Explorer.LevelExplorer.Proxies
             {
                 if (Components[i] != null)
                 {
-                    Unreal.Classes.StaticMeshComponent com = Components[i].Component;
-                    if (com.Translation.X != 0 || com.Translation.Y != 0 || com.Translation.Z != 0 || com.Rotation.X != 0 || com.Rotation.Y != 0 || com.Rotation.Z != 0)
-                        System.Diagnostics.Debugger.Break();
-                    SharpDX.Matrix YZConvert = SharpDX.Matrix.RotationX(SharpDX.MathUtil.PiOverTwo);
-                    SharpDX.Matrix YZInverse = YZConvert;
-                    YZInverse.Invert();
-                    SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(com.Translation.X, com.Translation.Y, com.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(Components[i].Rotation.X, Components[i].Rotation.Y, Components[i].Rotation.Z) * SharpDX.Matrix.Scaling(-com.Scale3D.X * com.Scale, -com.Scale3D.Y * com.Scale, com.Scale3D.Z * com.Scale);
-                    Components[i].Preview.Render(Window.Renderer, 0, YZConvert * comTransform * Actor.Matrices[i] * YZInverse);
+                    Matrix transform = Components[i].RenderingMatrix(Actor.Matrices[i]);
+                    Components[i].Preview.Render(Window.Renderer, 0, transform);
+
+                    if (IsSelected)
+                    {
+                        Window.Renderer.Wireframe = true;
+                        Scene3D.SceneRenderControl.WorldConstants ViewConstants = new Scene3D.SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(Window.Renderer.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(Window.Renderer.Camera.ViewMatrix), SharpDX.Matrix.Transpose(transform));
+                        Window.SelectionEffect.PrepDraw(Window.Renderer.ImmediateContext);
+                        Window.SelectionEffect.RenderObject(Window.Renderer.ImmediateContext, ViewConstants, Components[i].Preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+                        Window.Renderer.Wireframe = false;
+                    }
                 }
             }
         }
