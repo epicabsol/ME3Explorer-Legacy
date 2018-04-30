@@ -345,6 +345,7 @@
     <Compile Include="LevelExplorer\Proxies\InterpActorProxy.cs" />
     <Compile Include="LevelExplorer\Proxies\StaticMeshActorProxy.cs" />
     <Compile Include="LevelExplorer\Proxies\StaticMeshCollectionActorProxy.cs" />
+    <Compile Include="LevelExplorer\UnknownProxy.cs" />
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>

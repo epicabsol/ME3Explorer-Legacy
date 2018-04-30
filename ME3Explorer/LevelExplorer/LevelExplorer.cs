@@ -34,10 +34,31 @@ namespace ME3Explorer.LevelExplorer
             Renderer.StrafeSpeed = 800.0f;
             SceneTree.NodeMouseDoubleClick += SceneTree_NodeMouseDoubleClick;
             SceneTree.AfterCheck += SceneTree_AfterCheck;
+            SceneTree.BeforeSelect += SceneTree_BeforeSelect;
             Renderer.MouseClick += Renderer_MouseClick;
             Renderer.MouseDown += Renderer_MouseDown;
             KeyDown += LevelExplorer_KeyDown;
             KeyUp += LevelExplorer_KeyUp;
+        }
+
+        private void SceneTree_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = true;
+            if (!Renderer.KeyShift)
+            {
+                foreach (BaseProxy proxy in Proxies)
+                {
+                    proxy.IsSelected = false;
+                    //proxy.TreeNode.Checked = false;
+                }
+                (e.Node.Tag as BaseProxy).IsSelected = true;
+            }
+            else
+            {
+                (e.Node.Tag as BaseProxy).IsSelected = !(e.Node.Tag as BaseProxy).IsSelected;
+
+            }
+            //e.Node.Checked = true;
         }
 
         private void Renderer_MouseDown(object sender, MouseEventArgs e)
@@ -94,7 +115,7 @@ namespace ME3Explorer.LevelExplorer
 
         private void LevelExplorer_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Menu || e.Alt || e.KeyCode == Keys.Shift || e.Shift)
+            if (e.KeyCode == Keys.Menu || e.Alt || e.KeyCode == Keys.ShiftKey || e.Shift)
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
@@ -110,6 +131,13 @@ namespace ME3Explorer.LevelExplorer
                 e.SuppressKeyPress = true;
                 Renderer.InvokeKeyDown(e);
             }
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            if (keyData == Keys.Alt || keyData == Keys.Menu || keyData == Keys.Shift || keyData == Keys.ShiftKey)
+                return true;
+            return base.IsInputKey(keyData);
         }
 
         private void Renderer_MouseClick(object sender, MouseEventArgs e)
@@ -169,6 +197,12 @@ namespace ME3Explorer.LevelExplorer
                 BaseProxy proxy = BaseProxy.CreateProxy(pcc.getExport(index), this);
                 if (proxy != null)
                 {
+                    Proxies.Add(proxy);
+                    SceneTree.Nodes.Add(proxy.TreeNode);
+                }
+                else
+                {
+                    proxy = new UnknownProxy(pcc.getExport(index), this);
                     Proxies.Add(proxy);
                     SceneTree.Nodes.Add(proxy.TreeNode);
                 }
