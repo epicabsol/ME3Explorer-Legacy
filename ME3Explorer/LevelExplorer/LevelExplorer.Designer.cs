@@ -262,6 +262,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "LevelExplorer";
             this.Text = "LevelExplorer";

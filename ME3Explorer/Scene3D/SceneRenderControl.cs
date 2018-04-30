@@ -50,6 +50,7 @@ namespace ME3Explorer.Scene3D
         public bool KeyS = false;
         public bool KeyA = false;
         public bool KeyD = false;
+        public bool KeyAlt = false;
         public bool KeySpace = false;
         public bool KeyShift = false;
         public bool Orbiting { get; private set; } = false;
@@ -64,6 +65,7 @@ namespace ME3Explorer.Scene3D
             }
         }
         public float StrafeSpeed = 5.0f;
+        public bool RequireAltKey = false;
 
         public SceneRenderControl()
         {
@@ -260,11 +262,11 @@ namespace ME3Explorer.Scene3D
                 }
                 if (KeySpace)
                 {
-                    Camera.Position += Camera.CameraUp * TimeStep * StrafeSpeed;
+                    Camera.Position += Vector3.UnitY * TimeStep * StrafeSpeed;
                 }
-                if (KeyShift)
+                if (KeyAlt)
                 {
-                    Camera.Position += -Camera.CameraUp * TimeStep * StrafeSpeed;
+                    Camera.Position += -Vector3.UnitY * TimeStep * StrafeSpeed;
                 }
             }
         }
@@ -319,13 +321,13 @@ namespace ME3Explorer.Scene3D
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (!Panning && !Zooming) Orbiting = true;
+                    if (!Panning && !Zooming && (KeyAlt || !RequireAltKey)) Orbiting = true;
                     break;
                 case MouseButtons.Middle:
-                    if (!Orbiting && !Zooming) Panning = true;
+                    if (!Orbiting && !Zooming && (KeyAlt || !RequireAltKey)) Panning = true;
                     break;
                 case MouseButtons.Right:
-                    if (!Orbiting && !Panning) Zooming = true;
+                    if (!Orbiting && !Panning && (KeyAlt || !RequireAltKey)) Zooming = true;
                     break;
             }
         }
@@ -333,9 +335,12 @@ namespace ME3Explorer.Scene3D
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            Orbiting = false;
-            Panning = false;
-            Zooming = false;
+            if (e.Button == MouseButtons.Left)
+                Orbiting = false;
+            else if (e.Button == MouseButtons.Middle)
+                Panning = false;
+            else if (e.Button == MouseButtons.Right)
+                Zooming = false;
         }
 
         private System.Drawing.Point lastMouse;
@@ -398,6 +403,7 @@ namespace ME3Explorer.Scene3D
             Camera.aspect = (float) Width / Height;
         }
 
+        public void InvokeKeyDown(KeyEventArgs e) { OnKeyDown(e); } // Ugly hack but hey, it works
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -421,9 +427,13 @@ namespace ME3Explorer.Scene3D
                 case Keys.ShiftKey:
                     KeyShift = true;
                     break;
+                case Keys.Menu:
+                    KeyAlt = true;
+                    break;
             }
         }
 
+        public void InvokeKeyUp(KeyEventArgs e) { OnKeyUp(e); } // Not any better than the first time I used this hack
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
@@ -447,12 +457,15 @@ namespace ME3Explorer.Scene3D
                 case Keys.ShiftKey:
                     KeyShift = false;
                     break;
+                case Keys.Menu:
+                    KeyAlt = false;
+                    break;
             }
         }
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.HasFlag(Keys.Shift)) return true;
+            if (keyData.HasFlag(Keys.Shift) || keyData.HasFlag(Keys.Alt)) return true;
             return base.IsInputKey(keyData);
         }
     }
