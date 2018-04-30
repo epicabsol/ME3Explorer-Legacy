@@ -41,11 +41,13 @@ namespace ME3Explorer.LevelExplorer
 
                     if (IsSelected)
                     {
+                        TreeNode.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);
                         OnSelected(this, new EventArgs());
                         Selected?.Invoke(this, new EventArgs());
                     }
                     else
                     {
+                        TreeNode.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
                         OnDeselected(this, new EventArgs());
                         Deselected?.Invoke(this, new EventArgs());
                     }
