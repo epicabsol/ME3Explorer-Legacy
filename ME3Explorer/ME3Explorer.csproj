@@ -1514,6 +1514,14 @@
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scene3D\ColorShader.hlsl" />
+    <Content Include="Scene3D\SelectionShader.hlsl" />
     <None Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />

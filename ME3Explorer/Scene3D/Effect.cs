@@ -63,6 +63,8 @@ namespace ME3Explorer.Scene3D
             Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(Mesh.VertexBuffer, new Vertex().VertexLength, 0));
             Context.InputAssembler.SetIndexBuffer(Mesh.IndexBuffer, Format.R32_UInt, 0);
 
+            Context.InputAssembler.PrimitiveTopology = Mesh.PrimitiveTopology;
+
             // Set the textures
             for (int i = 0; i < Textures.Length; i++)
             {
@@ -70,12 +72,20 @@ namespace ME3Explorer.Scene3D
             }
 
             // Draw!!!
-            Context.DrawIndexed(indexcount, indexstart, 0);
+            /*try
+            {*/
+                Context.DrawIndexed(indexcount, indexstart, 0);
+
+            /*}
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception drawing: " + ex.ToString());
+            }*/
         }
 
         public void RenderObject(DeviceContext context, ConstantBufferData ConstantData, Mesh<Vertex> Mesh, params ShaderResourceView[] Textures)
         {
-            RenderObject(context, ConstantData, Mesh, 0, Mesh.Triangles.Count * 3, Textures);
+            RenderObject(context, ConstantData, Mesh, 0, Mesh.Indices.Count, Textures);
         }
 
         public void Dispose()

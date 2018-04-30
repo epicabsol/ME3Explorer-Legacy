@@ -299,7 +299,8 @@ namespace ME3Explorer.Scene3D
         public ModelPreview(Device Device, Unreal.Classes.StaticMesh m, PreviewTextureCache texcache)
         {
             // STEP 1: MESH
-            List<Triangle> triangles = new List<Triangle>();
+            //List<Triangle> triangles = new List<Triangle>();
+            List<uint> indices = new List<uint>();
             List<WorldVertex> vertices = new List<WorldVertex>();
             // Gather all the vertex data
             // Only one LOD? odd but I guess that's just how it rolls.
@@ -316,9 +317,9 @@ namespace ME3Explorer.Scene3D
             if (m.Mesh.IdxBuf.Indexes != null && m.Mesh.IdxBuf.Indexes.Count > 0)
             {
                 // Hey, we have indices all set up for us. How considerate.
-                for (int i = 0; i < m.Mesh.IdxBuf.Indexes.Count; i += 3)
+                for (int i = 0; i < m.Mesh.IdxBuf.Indexes.Count; i++)
                 {
-                    triangles.Add(new Triangle(m.Mesh.IdxBuf.Indexes[i], m.Mesh.IdxBuf.Indexes[i + 1], m.Mesh.IdxBuf.Indexes[i + 2]));
+                    indices.Add(m.Mesh.IdxBuf.Indexes[i]);
                 }
             }
             else
@@ -326,7 +327,9 @@ namespace ME3Explorer.Scene3D
                 // Gather all the vertex data from the raw triangles, not the Mesh.Vertices.Point list.
                 for (int i = 0; i < m.Mesh.RawTris.RawTriangles.Count; i++)
                 {
-                    triangles.Add(new Triangle((uint)m.Mesh.RawTris.RawTriangles[i].v0, (uint)m.Mesh.RawTris.RawTriangles[i].v1, (uint)m.Mesh.RawTris.RawTriangles[i].v2));
+                    indices.Add((uint)m.Mesh.RawTris.RawTriangles[i].v0);
+                    indices.Add((uint)m.Mesh.RawTris.RawTriangles[i].v1);
+                    indices.Add((uint)m.Mesh.RawTris.RawTriangles[i].v2);
                 }
             }
 
@@ -349,7 +352,7 @@ namespace ME3Explorer.Scene3D
                 sections.Add(new ModelPreviewSection(m.pcc.getObjectName(section.Name), (uint)section.FirstIdx1, (uint)section.NumFaces1));
             }
             LODs = new List<ModelPreviewLOD>();
-            LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, triangles, vertices), sections));
+            LODs.Add(new ModelPreviewLOD(new WorldMesh(Device, indices, vertices), sections));
         }
 
         /// <summary>
@@ -420,12 +423,13 @@ namespace ME3Explorer.Scene3D
                     vertices.Add(new WorldVertex(new Vector3(-vertex.Position.X, vertex.Position.Z, vertex.Position.Y), Vector3.Zero, new Vector2(HalfToFloat(vertex.U), HalfToFloat(vertex.V))));
                 }
                 // Triangles
-                List<Triangle> triangles = new List<Triangle>();
-                for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i += 3)
+                List<uint> indices = new List<uint>();
+                for (int i = 0; i < lodmodel.IndexBuffer.Indexes.Count; i++)
                 {
-                    triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
+                    //triangles.Add(new Triangle(lodmodel.IndexBuffer.Indexes[i], lodmodel.IndexBuffer.Indexes[i + 1], lodmodel.IndexBuffer.Indexes[i + 2]));
+                    indices.Add(lodmodel.IndexBuffer.Indexes[i]);
                 }
-                WorldMesh mesh = new WorldMesh(Device, triangles, vertices);
+                WorldMesh mesh = new WorldMesh(Device, indices, vertices);
                 // Sections
                 List<ModelPreviewSection> sections = new List<ModelPreviewSection>();
                 foreach (Unreal.Classes.SkeletalMesh.SectionStruct section in lodmodel.Sections)
