@@ -13,7 +13,7 @@ namespace ME3Explorer.Scene3D
 
         }
 
-        public WorldMesh(Device Device, List<Triangle> Triangles, List<WorldVertex> Vertices) : base(Device, Triangles, Vertices)
+        public WorldMesh(Device Device, List<uint> Indices, List<WorldVertex> Vertices) : base(Device, Indices, Vertices)
         {
 
         }
@@ -21,7 +21,8 @@ namespace ME3Explorer.Scene3D
 
     public class Mesh<Vertex> : System.IDisposable where Vertex : VertexBase
     {
-        public List<Triangle> Triangles;
+        public SharpDX.Direct3D.PrimitiveTopology PrimitiveTopology;
+        public List<uint> Indices;
         public List<Vertex> Vertices;
         public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; } = null;
         public SharpDX.Direct3D11.Buffer IndexBuffer { get; private set; } = null;
@@ -45,24 +46,26 @@ namespace ME3Explorer.Scene3D
         // Creates a new blank mesh.
         public Mesh(SharpDX.Direct3D11.Device Device)
         {
-            Triangles = new List<Triangle>();
+            Indices = new List<uint>();
             Vertices = new List<Vertex>();
             RebuildBuffer(Device);
         }
 
         // Creates a blank mesh with the given data.
-        public Mesh(SharpDX.Direct3D11.Device Device, List<Triangle> Triangles, List<Vertex> Vertices)
+        public Mesh(SharpDX.Direct3D11.Device Device, List<uint> Indices, List<Vertex> Vertices, SharpDX.Direct3D.PrimitiveTopology PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList)
         {
-            this.Triangles = Triangles;
+            this.Indices = Indices;
             this.Vertices = Vertices;
+            this.PrimitiveTopology = PrimitiveTopology;
             RebuildBuffer(Device);
         }
+
         public void RebuildBuffer(SharpDX.Direct3D11.Device Device)
         {
             // Dispose all the old stuff
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
-            if (Triangles.Count == 0 || Vertices.Count == 0) return; // Why build and empty buffer?
+            if (Indices.Count == 0 || Vertices.Count == 0) return; // Why build and empty buffer?
 
             // Reset the AABB
             if (Vertices.Count == 0)
@@ -107,7 +110,7 @@ namespace ME3Explorer.Scene3D
 
             // Create and populate the vertex and index buffers
             VertexBuffer = SharpDX.Direct3D11.Buffer.Create<float>(Device, BindFlags.VertexBuffer, vertexdata.ToArray());
-            IndexBuffer = SharpDX.Direct3D11.Buffer.Create<Triangle>(Device, BindFlags.IndexBuffer, Triangles.ToArray());
+            IndexBuffer = SharpDX.Direct3D11.Buffer.Create<uint>(Device, BindFlags.IndexBuffer, Indices.ToArray());
         }
 
         public void Dispose()
@@ -115,12 +118,36 @@ namespace ME3Explorer.Scene3D
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
         }
+
+        public static Mesh<PositionColorVertex> CreateGrid(Device device, float minX, float maxX, float minZ, float maxZ, Vector3 color, float stepX = 1.0f, float stepZ = 1.0f)
+        {
+            List<PositionColorVertex> vertices = new List<PositionColorVertex>();
+            List<uint> indices = new List<uint>();
+
+            for (float x = minX; x <= maxX; x += stepX)
+            {
+                vertices.Add(new PositionColorVertex(new Vector3(x, 0, minZ), color));
+                vertices.Add(new PositionColorVertex(new Vector3(x, 0, maxZ), color));
+                indices.Add((uint)vertices.Count - 2);
+                indices.Add((uint)vertices.Count - 1);
+            }
+
+            for (float z = minZ; z <= maxZ; z += stepZ)
+            {
+                vertices.Add(new PositionColorVertex(new Vector3(minX, 0, z), color));
+                vertices.Add(new PositionColorVertex(new Vector3(maxX, 0, z), color));
+                indices.Add((uint)vertices.Count - 2);
+                indices.Add((uint)vertices.Count - 1);
+            }
+
+            return new Mesh<PositionColorVertex>(device, indices, vertices, SharpDX.Direct3D.PrimitiveTopology.LineList);
+        }
     }
 
     /// <summary>
     /// Contains the indices of the three vertices that make up a triangle.
     /// </summary>
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    /*[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public struct Triangle
     {
         public uint Vertex1;
@@ -133,7 +160,7 @@ namespace ME3Explorer.Scene3D
             this.Vertex2 = Vertex2;
             this.Vertex3 = Vertex3;
         }
-    }
+    }*/
 
     /// <summary>
     /// The base class for vertices that can be rendered. They must have a position. This is necessary for builtin AABB computation as well.
@@ -177,6 +204,11 @@ namespace ME3Explorer.Scene3D
     public class PositionColorVertex : VertexBase
     {
         Vector3 Color;
+
+        public PositionColorVertex() : base(Vector3.Zero)
+        {
+            Color = Vector3.One;
+        }
 
         public PositionColorVertex(Vector3 Position, Vector3 Color) : base(Position)
         {

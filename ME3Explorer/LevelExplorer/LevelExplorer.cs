@@ -11,6 +11,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal.Classes;
 using SharpDX;
 using SharpDX.Direct3D11;
+using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.LevelExplorer
 {
@@ -21,12 +22,30 @@ namespace ME3Explorer.LevelExplorer
 
         public List<BaseProxy> Proxies = new List<BaseProxy>();
 
+        private Mesh<PositionColorVertex> GridMesh;
+        private Mesh<PositionColorVertex> Grid100Mesh; // 100 times as large as GridMesh. Can't just reuse because different color.
+        public Effect<SceneRenderControl.WorldConstants, PositionColorVertex> PositionColorEffect = null;
+        public Effect<SceneRenderControl.WorldConstants, WorldVertex> SelectionEffect = null;
+
         public LevelExplorer()
         {
             InitializeComponent();
             //Renderer.Camera.FirstPerson = true;
             Renderer.StrafeSpeed = 800.0f;
             SceneTree.NodeMouseDoubleClick += SceneTree_NodeMouseDoubleClick;
+            SceneTree.AfterCheck += SceneTree_AfterCheck;
+        }
+
+        private void SceneTree_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                BaseProxy proxy = e.Node.Tag as BaseProxy;
+                if (proxy != null)
+                {
+                    proxy.IsSelected = e.Node.Checked;
+                }
+            }
         }
 
         private void UpdateTitleText()
@@ -80,9 +99,13 @@ namespace ME3Explorer.LevelExplorer
 
         private void sceneRenderControl1_Render(object sender, EventArgs e)
         {
-            Renderer.ImmediateContext.ClearRenderTargetView(Renderer.BackBufferView, new SharpDX.Color(1.0f, 1.0f, 1.0f, 1.0f));
+            Renderer.ImmediateContext.ClearRenderTargetView(Renderer.BackBufferView, new SharpDX.Color(0.3f, 0.3f, 0.3f, 1.0f));
 
-            // TODO: Render grid
+            PositionColorEffect.PrepDraw(Renderer.ImmediateContext);
+            Matrix gridTransform = Matrix.Translation((float)Math.Floor(Renderer.Camera.Position.X), 0, (float)Math.Floor(Renderer.Camera.Position.Z));
+            PositionColorEffect.RenderObject(Renderer.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(Renderer.Camera.ProjectionMatrix), Matrix.Transpose(Renderer.Camera.ViewMatrix), Matrix.Transpose(gridTransform)), GridMesh);
+            gridTransform = Matrix.Translation((float)Math.Floor(Renderer.Camera.Position.X / 100.0f) * 100.0f, 0, (float)Math.Floor(Renderer.Camera.Position.Z / 100.0f) * 100.0f);
+            PositionColorEffect.RenderObject(Renderer.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(Renderer.Camera.ProjectionMatrix), Matrix.Transpose(Renderer.Camera.ViewMatrix), Matrix.Transpose(gridTransform)), Grid100Mesh);
 
             foreach (BaseProxy proxy in Proxies)
             {
@@ -115,11 +138,19 @@ namespace ME3Explorer.LevelExplorer
         private void LevelExplorer_Load(object sender, EventArgs e)
         {
             Renderer.LoadDirect3D();
+            GridMesh = Mesh<PositionColorVertex>.CreateGrid(Renderer.Device, -100, 100, -100, 100, new Vector3(0.6f, 0.6f, 0.6f));
+            Grid100Mesh = Mesh<PositionColorVertex>.CreateGrid(Renderer.Device, -100 * 100, 100 * 100, -100 * 100, 100 * 100, new Vector3(0.9f, 0.9f, 0.9f), 100, 100);
+            PositionColorEffect = new Effect<SceneRenderControl.WorldConstants, PositionColorVertex>(Renderer.Device, Properties.Resources.ColorShader);
+            SelectionEffect = new Effect<SceneRenderControl.WorldConstants, WorldVertex>(Renderer.Device, Properties.Resources.SelectionShader);
         }
 
         private void LevelExplorer_FormClosing(object sender, FormClosingEventArgs e)
         {
             pcc.Dispose();
+            GridMesh.Dispose();
+            Grid100Mesh.Dispose();
+            PositionColorEffect.Dispose();
+            SelectionEffect.Dispose();
             Renderer.UnloadDirect3D();
             foreach (BaseProxy proxy in Proxies)
                 proxy.Dispose();

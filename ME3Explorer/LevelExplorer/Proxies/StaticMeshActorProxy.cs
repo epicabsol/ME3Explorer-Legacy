@@ -178,8 +178,20 @@ namespace ME3Explorer.LevelExplorer.Proxies
                 System.Diagnostics.Debugger.Break();
             SharpDX.Matrix comTransform = SharpDX.Matrix.Translation(com.Translation.X, com.Translation.Y, com.Translation.Z) * SharpDX.Matrix.RotationYawPitchRoll(com.RotatorToDX(com.Rotation).X, com.RotatorToDX(com.Rotation).Y, com.RotatorToDX(com.Rotation).Z) * SharpDX.Matrix.Scaling(-com.Scale3D.X * com.Scale, -com.Scale3D.Y * com.Scale, com.Scale3D.Z * com.Scale);
             SharpDX.Matrix actorTransform = SharpDX.Matrix.RotationYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z) * SharpDX.Matrix.Scaling(DrawScale3D.X * DrawScale, DrawScale3D.Y * DrawScale, DrawScale3D.Z * DrawScale) * SharpDX.Matrix.Translation(location.X, location.Y, location.Z);
+            SharpDX.Matrix finalTransform = YZConvert * comTransform * actorTransform * YZInverse;
+            Preview?.Render(Window.Renderer, 0, finalTransform);
+            if (Preview != null && IsSelected)
+            {
+                bool wasWire = Window.Renderer.Wireframe;
+                Window.Renderer.Wireframe = true;
 
-            Preview?.Render(Window.Renderer, 0, YZConvert * comTransform * actorTransform * YZInverse);
+                Scene3D.SceneRenderControl.WorldConstants ViewConstants = new Scene3D.SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(Window.Renderer.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(Window.Renderer.Camera.ViewMatrix), SharpDX.Matrix.Transpose(finalTransform));
+                Window.SelectionEffect.PrepDraw(Window.Renderer.ImmediateContext);
+                Window.SelectionEffect.RenderObject(Window.Renderer.ImmediateContext, ViewConstants, Preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+
+
+                Window.Renderer.Wireframe = wasWire;
+            }
 
             base.Render();
         }

@@ -1496,6 +1496,8 @@
     <Resource Include="Resources\pathfinding_editor.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scene3D\ColorShader.hlsl" />
+    <Content Include="Scene3D\SelectionShader.hlsl" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

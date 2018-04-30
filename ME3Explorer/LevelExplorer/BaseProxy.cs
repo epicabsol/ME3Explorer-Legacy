@@ -26,6 +26,39 @@ namespace ME3Explorer.LevelExplorer
 
         [Browsable(false)]
         protected LevelExplorer Window { get; }
+        private bool _isSelected = false;
+        [Browsable(false)]
+        public bool IsSelected
+        {
+            set
+            {
+                if (value != IsSelected)
+                {
+                    _isSelected = value;
+
+                    if (TreeNode.Checked != value)
+                        TreeNode.Checked = value;
+
+                    if (IsSelected)
+                    {
+                        OnSelected(this, new EventArgs());
+                        Selected?.Invoke(this, new EventArgs());
+                    }
+                    else
+                    {
+                        OnDeselected(this, new EventArgs());
+                        Deselected?.Invoke(this, new EventArgs());
+                    }
+                }
+            }
+            get
+            {
+                return _isSelected;
+            }
+        }
+
+        public event EventHandler Selected;
+        public event EventHandler Deselected;
 
         public BaseProxy(IExportEntry export, LevelExplorer window)
         {
@@ -64,6 +97,16 @@ namespace ME3Explorer.LevelExplorer
         }
 
         public virtual void Dispose()
+        {
+
+        }
+
+        protected virtual void OnSelected(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void OnDeselected(object sender, EventArgs e)
         {
 
         }

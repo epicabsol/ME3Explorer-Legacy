@@ -1,20 +1,17 @@
 ﻿// This has to match the data in the vertex buffer.
 struct VS_IN {
 	float3 pos : POSITION;
-	float3 normal : NORMAL;
-	float2 uv : TEXCOORD0;
+	float3 color : COLOR;
 };
 
 struct VS_OUT {
 	float4 pos : SV_POSITION;
-	float3 normal : NORMAL;
-	float2 uv : TEXCOORD0;
+	float3 color : COLOR;
 };
 
 struct PS_IN {
 	float4 pos : SV_POSITION;
-	float3 normal : NORMAL;
-	float2 uv : TEXCOORD0;
+	float3 color : COLOR;
 };
 
 struct PS_OUT {
@@ -27,9 +24,6 @@ cbuffer constants {
 	float4x4 model;
 };
 
-Texture2D tex : register(t0);
-SamplerState samstate : register(s0);
-
 VS_OUT VSMain(VS_IN input) {
 	VS_OUT result = (VS_OUT)0;
 
@@ -38,11 +32,8 @@ VS_OUT VSMain(VS_IN input) {
 	result.pos = mul(result.pos, view);
 	result.pos = mul(result.pos, projection);
 
-	// Pass through the normal
-	result.normal = mul(input.normal, model);
-
-	// Pass through the uv coordinate
-	result.uv = input.uv;
+	// Pass through the color
+	result.color = input.color;
 
 	return result;
 }
@@ -50,12 +41,7 @@ VS_OUT VSMain(VS_IN input) {
 PS_OUT PSMain(PS_IN input) {
 	PS_OUT result = (PS_OUT)0;
 
-	// just color everything white
-	//result.color = float4(1.0, 1.0, 1.0, 1.0);
-
-	// use the texture
-	//result.color = tex2D(sam, input.uv);
-	result.color = tex.Sample(samstate, input.uv);
+	result.color = float4(input.color, 1.0f);
 
 	return result;
 }

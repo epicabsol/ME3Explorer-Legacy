@@ -121,6 +121,44 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
+        ///struct VS_IN {
+        ///	float3 pos : POSITION;
+        ///	float3 color : COLOR;
+        ///};
+        ///
+        ///struct VS_OUT {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 color : COLOR;
+        ///};
+        ///
+        ///struct PS_IN {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 color : COLOR;
+        ///};
+        ///
+        ///struct PS_OUT {
+        ///	float4 color : SV_TARGET;
+        ///};
+        ///
+        ///cbuffer constants {
+        ///	float4x4 projection;
+        ///	float4x4 view;
+        ///	float4x4 model;
+        ///};
+        ///
+        ///VS_OUT VSMain(VS_IN input) {
+        ///	VS_OUT result = (VS_OUT)0;
+        ///
+        ///	// Transform the input object-space posit [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ColorShader {
+            get {
+                return ResourceManager.GetString("ColorShader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap conditionals_editor_64x64 {
@@ -397,6 +435,42 @@ namespace ME3Explorer.Properties {
             get {
                 object obj = ResourceManager.GetObject("psk_viewer_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
+        ///struct VS_IN {
+        ///	float3 pos : POSITION;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct VS_OUT {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 worldpos : COLOR0;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_IN {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 worldpos : COLOR0;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_OUT {
+        ///	float4 color : SV_TARGET;
+        ///};
+        ///
+        ///cbuffer constants {
+        ///	float4x4 projection;
+        ///	float4 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string SelectionShader {
+            get {
+                return ResourceManager.GetString("SelectionShader", resourceCulture);
             }
         }
         
