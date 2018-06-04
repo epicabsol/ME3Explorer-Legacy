@@ -342,10 +342,12 @@
       <DependentUpon>LevelSelectDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="LevelExplorer\PropGridHelpers.cs" />
+    <Compile Include="LevelExplorer\Proxies\BrushProxy.cs" />
     <Compile Include="LevelExplorer\Proxies\InterpActorProxy.cs" />
     <Compile Include="LevelExplorer\Proxies\StaticMeshActorProxy.cs" />
     <Compile Include="LevelExplorer\Proxies\StaticMeshCollectionActorProxy.cs" />
     <Compile Include="LevelExplorer\UnknownProxy.cs" />
+    <Compile Include="LevelExplorer\Brush.cs" />
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
