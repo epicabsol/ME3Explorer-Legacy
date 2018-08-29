@@ -1,4 +1,6 @@
-﻿using ME3Explorer.Packages;
+﻿using KFreonLib.Debugging;
+using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
@@ -142,8 +144,21 @@ namespace ME3Explorer
                     string origImportFullName = origImport.GetFullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
-                    ImportEntry crossImport = getOrAddCrossImport(origImportFullName, importingPCC, destinationPCC);
-
+                    ImportEntry crossImport = null;
+                    string linkFailedDueToError = null;
+                    try
+                    {
+                        crossImport = getOrAddCrossImport(origImportFullName, importingPCC, destinationPCC);
+                    }
+                    catch (Exception e)
+                    {
+                        //Error during relink
+                        KFreonLib.Debugging.DebugOutput.StartDebugger("PCC Relinker");
+                        DebugOutput.PrintLn("Exception occured during relink: ");
+                        DebugOutput.PrintLn(ExceptionHandlerDialogWPF.FlattenException(e));
+                        DebugOutput.PrintLn("You may want to consider discarding this sessions' changes as relinking was not able to properly finish.");
+                        linkFailedDueToError = e.Message;
+                    }
                     if (crossImport != null)
                     {
                         //cache item. Imports are stored +1, Exports-1. Someday I will go back and make this just 0 indexed
@@ -154,6 +169,12 @@ namespace ME3Explorer
                     }
                     else
                     {
+                        if (linkFailedDueToError != null)
+                        {
+                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
+                            return "Relink failed for " + objProperty.Name + " " + objProperty.Value + ": " + linkFailedDueToError;
+                        }
+                        else
                         if (destinationPCC.getEntry(objProperty.Value) != null)
                         {
                             Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
