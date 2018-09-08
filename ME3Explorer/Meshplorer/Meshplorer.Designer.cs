@@ -527,6 +527,7 @@
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 0;
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
