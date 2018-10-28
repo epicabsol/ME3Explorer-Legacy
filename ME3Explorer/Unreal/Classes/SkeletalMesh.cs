@@ -1080,6 +1080,7 @@ namespace ME3Explorer.Unreal.Classes
                 }
 
                 // Triangles
+                lodIndex = 0;
                 foreach (var lod in LODModels)
                 {
                     int lodStart = LODVertexOffsets[lodIndex];
