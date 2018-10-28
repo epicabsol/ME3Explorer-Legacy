@@ -1146,7 +1146,7 @@ namespace ME3Explorer.Meshplorer
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 timer1.Enabled = false;
-                stm.ImportOBJ(dialog.FileName);
+                stm.ImportOBJ(dialog.FileName, MPOpt.FlipVCoord);
                 byte[] buff = stm.SerializeToBuffer();
                 IExportEntry en = pcc.Exports[stm.index];
                 en.Data = buff;

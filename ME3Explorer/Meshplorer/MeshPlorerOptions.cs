@@ -14,6 +14,7 @@ namespace ME3Explorer
         public static bool SKM_normalize = true;
         public static bool SKM_importbones = false;
         public static bool SKM_fixtexcoord = false;
+        public static bool FlipVCoord = false;
         public static bool SKM_tnflipX = false;
         public static bool SKM_tnflipY = false;
         public static bool SKM_tnflipZ = true;

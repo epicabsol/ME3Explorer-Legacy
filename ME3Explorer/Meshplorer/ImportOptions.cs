@@ -32,6 +32,7 @@ namespace ME3Explorer.Meshplorer
             checkBox12.Checked = MPOpt.SKM_importbones;
             checkBox13.Checked = MPOpt.SKM_fixtexcoord;
             checkBox14.Checked = MPOpt.SKM_tnW100;
+            checkBox15.Checked = MPOpt.FlipVCoord;
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -108,6 +109,11 @@ namespace ME3Explorer.Meshplorer
         private void checkBox14_CheckedChanged(object sender, EventArgs e)
         {
             MPOpt.SKM_tnW100 = checkBox14.Checked;
+        }
+
+        private void checkBox15_CheckedChanged(object sender, EventArgs e)
+        {
+            MPOpt.FlipVCoord = checkBox15.Checked;
         }
     }
 }

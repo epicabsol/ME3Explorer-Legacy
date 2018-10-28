@@ -87,6 +87,23 @@ namespace ME3Explorer.Scene3D
         /// Stores loaded textures by their full name.
         /// </summary>
         private List<PreviewTextureEntry> cache = new List<PreviewTextureEntry>();
+
+        public PreviewTextureEntry LoadTextureFromBitmap(string pcc, int exportid, System.Drawing.Bitmap bmp)
+        {
+            Texture2DDescription desc = new Texture2DDescription();
+            try
+            {
+                PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
+                entry.Texture = ((Meshplorer.Meshplorer)Meshplorer.Meshplorer.ActiveForm).view.LoadTexture(bmp);
+                entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+                cache.Add(entry);
+                return entry;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         
         /// <summary>
         /// Queues a texture for eventual loading.

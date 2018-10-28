@@ -187,6 +187,15 @@ namespace ME3Explorer.Scene3D
 
             if (id > 0)
             {
+                // HACK: Also look for a PNG next to the pcc for quick testing
+                string testName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(pccpath), System.IO.Path.GetFileName(FullTextureName)) + ".png";
+                if (System.IO.File.Exists(testName))
+                {
+                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(testName);
+
+                    return texcache.LoadTextureFromBitmap(pccpath, id, bmp);
+                }
+
                 return texcache.LoadTexture(pccpath, id);
             }
             else

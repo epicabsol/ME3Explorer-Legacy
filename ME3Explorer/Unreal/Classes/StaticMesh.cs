@@ -2002,7 +2002,7 @@ namespace ME3Explorer.Unreal.Classes
             public int MaterialIndex;
         }
 
-        public void ImportOBJ(string path)
+        public void ImportOBJ(string path, bool flipV)
         {
             // Read OBJ data
             List<Vector3> positions = new List<Vector3>();
@@ -2101,6 +2101,8 @@ namespace ME3Explorer.Unreal.Classes
                     for (int i = 0; i < triangle.PositionIndices.Length; i++)
                     {
                         Tuple<Vector3, Vector2> vertex = new Tuple<Vector3, Vector2>(positions[triangle.PositionIndices[i]], uvs[triangle.UVIndices[i]]);
+                        if (flipV)
+                            vertex = new Tuple<Vector3, Vector2>(vertex.Item1, new Vector2(vertex.Item2.X, 1.0f - vertex.Item2.Y));
                         int vertexIndex = weldedVertices.IndexOf(vertex);
                         if (vertexIndex == -1)
                         {
