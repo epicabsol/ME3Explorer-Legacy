@@ -755,13 +755,11 @@ namespace ME3Explorer
                             break;
                         }
                     }
-
                     if (donorImport == null)
                     {
-                        KFreonLib.Debugging.DebugOutput.StartDebugger("Package Editor Relinker");
-                        KFreonLib.Debugging.DebugOutput.PrintLn("Error: DonorImport was null while porting all required upstream imports. Could not find import in donor file: " + fullobjectname);
-                        KFreonLib.Debugging.DebugOutput.PrintLn("Upstreamcount remaining: " + upstreamCount);
+                        throw new Exception("No suitable upstream import was found for porting - this may be an export in the source file that is referenced as a parent or dependency. You should import this object and its parents first. " + fullobjectname + "(as part of " + importFullName + ")");
                     }
+
                     int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
                     int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
